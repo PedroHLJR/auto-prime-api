@@ -8,10 +8,9 @@
 
 - [Sobre o Projeto](#-sobre-o-projeto)
 - [Tecnologias](#-tecnologias)
-- [Estrutura Sugerida da API](#-estrutura-sugerida-da-api)
+- [Estrutura da API](#-estrutura-da-api)
 - [Endpoints](#-endpoints)
 - [Como Executar](#-como-executar)
-- [Variáveis de Ambiente](#-variáveis-de-ambiente)
 - [Banco de Dados](#-banco-de-dados)
 - [Frontend](#-frontend)
 - [Autor](#-autor)
@@ -20,67 +19,43 @@
 
 ## 📌 Sobre o Projeto
 
-A **Auto Prime API** é uma aplicação back-end que fornece serviços para uma loja fictícia de automóveis. Ela gerencia o catálogo de veículos, clientes e pedidos de compra, expondo endpoints REST consumidos pelo front-end da aplicação.
+A **Auto Prime API** é uma aplicação back-end que fornece serviços para uma loja fictícia de automóveis. Ela gerencia o catálogo de veículos expondo endpoints REST consumidos pelo front-end da aplicação.
 
 ---
 
 ## 🛠 Tecnologias
 
-| Camada       | Tecnologia                          |
-|--------------|--------------------------------------|
-| Linguagem    | Java 25                             |
-| Framework    | Spring Boot 4                      |
-| Banco de Dados | MySQL                |
-| Build        | Maven                                |
-| Testes       | JUnit 5      |
+| Camada         | Tecnologia        |
+|----------------|-------------------|
+| Linguagem      | Java 25           |
+| Framework      | Spring Boot 4     |
+| Banco de Dados | SQL Server        |
+| Build          | Maven             |
+| Testes         | JUnit 5           |
+| Documentação   | Swagger (OpenAPI) |
 
 ---
 
-## 🗂 Estrutura Sugerida da API
+## 🗂 Estrutura da API
 
 ```
 auto-prime-api/
 ├── src/
 │   └── main/
-│       ├── java/com/autoprime/api/
-│       │   ├── controller/         # Camada de entrada (REST Controllers)
-│       │   │   ├── CarroController.java
-│       │   │   ├── MarcaController.java
-│       │   │   ├── ClienteController.java
-│       │   │   └── PedidoController.java
-│       │   │
-│       │   ├── service/            # Regras de negócio
-│       │   │   ├── CarroService.java
-│       │   │   ├── MarcaService.java
-│       │   │   ├── ClienteService.java
-│       │   │   └── PedidoService.java
-│       │   │
-│       │   ├── repository/         # Comunicação com o banco (JPA)
-│       │   │   ├── CarroRepository.java
-│       │   │   ├── MarcaRepository.java
-│       │   │   ├── ClienteRepository.java
-│       │   │   └── PedidoRepository.java
-│       │   │
-│       │   ├── model/              # Entidades JPA
-│       │   │   ├── Carro.java
-│       │   │   ├── Marca.java
-│       │   │   ├── Cliente.java
-│       │   │   └── Pedido.java
-│       │   │
-│       │   ├── dto/                # Objetos de transferência de dados
-│       │   │   ├── CarroDTO.java
-│       │   │   ├── ClienteDTO.java
-│       │   │   └── PedidoDTO.java
-│       │   │
-│       │   ├── exception/          # Tratamento de erros globais
-│       │   │   ├── GlobalExceptionHandler.java
-│       │   │   └── ResourceNotFoundException.java
-│       │   │
-│       │   └── AutoPrimeApiApplication.java
+│       ├── java/com/auto_prime/demo/
+│       │   ├── controller/
+│       │   │   └── VeiculoController.java
+│       │   ├── model/
+│       │   │   └── Veiculo.java
+│       │   ├── repository/
+│       │   │   └── VeiculoRepository.java
+│       │   ├── service/
+│       │   │   └── VeiculoService.java
+│       │   └── AutoPrimeApplication.java
 │       │
 │       └── resources/
 │           ├── application.properties
-│           └── application-dev.properties
+│           └── application.properties.example
 │
 └── pom.xml
 ```
@@ -89,92 +64,82 @@ auto-prime-api/
 
 ## 📡 Endpoints
 
-### 🚘 Carros — `/api/carros`
+### 🚘 Veículos — `/api/veiculos`
 
-| Método | Rota              | Descrição                        |
-|--------|-------------------|----------------------------------|
-| GET    | `/api/carros`     | Lista todos os carros            |
-| GET    | `/api/carros/{id}`| Busca um carro por ID            |
-| POST   | `/api/carros`     | Cadastra um novo carro           |
-| PUT    | `/api/carros/{id}`| Atualiza dados de um carro       |
-| DELETE | `/api/carros/{id}`| Remove um carro                  |
+| Método | Rota                              | Descrição                       |
+|--------|-----------------------------------|---------------------------------|
+| GET    | `/api/veiculos`                   | Lista todos os veículos         |
+| GET    | `/api/veiculos/{id}`              | Busca um veículo por ID         |
+| GET    | `/api/veiculos/marca/{marca}`     | Filtra veículos por marca       |
+| GET    | `/api/veiculos/situacao/{situacao}` | Filtra veículos por situação  |
+| POST   | `/api/veiculos`                   | Cadastra um novo veículo        |
+| PUT    | `/api/veiculos/{id}`              | Atualiza dados de um veículo    |
+| DELETE | `/api/veiculos/{id}`              | Remove um veículo               |
 
 **Exemplo de body (POST/PUT):**
 ```json
 {
-  "modelo": "Civic",
+  "marca": "Toyota",
+  "modelo": "Corolla",
   "ano": 2023,
-  "preco": 145000.00,
   "cor": "Prata",
-  "quilometragem": 0,
-  "disponivel": true,
-  "marcaId": 1
+  "placa": "ABC1D234",
+  "chassi": "9BWZZZ377VT004251",
+  "kmRodados": 0,
+  "preco": 145000.00,
+  "situacao": "Disponível",
+  "descricao": "Veículo seminovo em ótimo estado."
 }
 ```
 
 ---
 
-### 🏷 Marcas — `/api/marcas`
+## ▶ Como Executar
 
-| Método | Rota               | Descrição                   |
-|--------|--------------------|-----------------------------|
-| GET    | `/api/marcas`      | Lista todas as marcas        |
-| GET    | `/api/marcas/{id}` | Busca uma marca por ID       |
-| POST   | `/api/marcas`      | Cadastra uma nova marca      |
-| PUT    | `/api/marcas/{id}` | Atualiza dados de uma marca  |
-| DELETE | `/api/marcas/{id}` | Remove uma marca             |
+### Pré-requisitos
 
-**Exemplo de body (POST/PUT):**
-```json
-{
-  "nome": "Honda",
-  "paisOrigem": "Japão"
-}
+- Java 25
+- Maven 3.8+
+- SQL Server rodando localmente
+
+### Passo a passo
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/PedroHLJR/auto-prime-api.git
+
+# 2. Entre na pasta do projeto
+cd auto-prime-api
+
+# 3. Copie o arquivo de exemplo e configure com seus dados locais
+cp application.properties.example src/main/resources/application.properties
+
+# 4. Compile e instale as dependências
+mvn clean install
+
+# 5. Execute a aplicação
+mvn spring-boot:run
 ```
+
+A API estará disponível em: `http://localhost:8080`
+
+Documentação Swagger: `http://localhost:8080/swagger-ui.html`
 
 ---
 
-### 👤 Clientes — `/api/clientes`
+## 🗄 Banco de Dados
 
-| Método | Rota                 | Descrição                     |
-|--------|----------------------|-------------------------------|
-| GET    | `/api/clientes`      | Lista todos os clientes        |
-| GET    | `/api/clientes/{id}` | Busca um cliente por ID        |
-| POST   | `/api/clientes`      | Cadastra um novo cliente       |
-| PUT    | `/api/clientes/{id}` | Atualiza dados de um cliente   |
-| DELETE | `/api/clientes/{id}` | Remove um cliente              |
+O banco de dados é gerenciado pelo **SQL Server** com autenticação do Windows. A tabela principal é `Veiculos`, com os campos: `marca`, `modelo`, `ano`, `cor`, `placa`, `chassi`, `km_rodados`, `preco`, `situacao` e `descricao`.
 
-**Exemplo de body (POST/PUT):**
-```json
-{
-  "nome": "João Silva",
-  "email": "joao@email.com",
-  "telefone": "32999998888",
-  "cpf": "123.456.789-00"
-}
-```
+> ⚠️ O arquivo `application.properties` não é versionado. Use o `application.properties.example` como base para configurar sua conexão local.
 
 ---
 
-### 🛒 Pedidos — `/api/pedidos`
+## 🌐 Frontend
 
-| Método | Rota                 | Descrição                     |
-|--------|----------------------|-------------------------------|
-| GET    | `/api/pedidos`       | Lista todos os pedidos         |
-| GET    | `/api/pedidos/{id}`  | Busca um pedido por ID         |
-| POST   | `/api/pedidos`       | Cria um novo pedido            |
-| PUT    | `/api/pedidos/{id}`  | Atualiza status de um pedido   |
-| DELETE | `/api/pedidos/{id}`  | Cancela um pedido              |
+O front-end da aplicação está disponível em repositório separado e consome esta API via chamadas HTTP.
 
-**Exemplo de body (POST):**
-```json
-{
-  "clienteId": 1,
-  "carroId": 3,
-  "formaPagamento": "FINANCIAMENTO",
-  "status": "PENDENTE"
-}
-```
+> 🔗 **Repositório do Frontend:** *(adicione o link aqui)*
 
 ---
 
