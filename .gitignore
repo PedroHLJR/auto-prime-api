@@ -1,0 +1,25 @@
+# Compilação Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Configuração local (credenciais do banco)
+application.properties
+!application.properties.example
+
+# VSCode
+.vscode/
+
+# IntelliJ (caso venha a usar)
+.idea/
+*.iml
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
